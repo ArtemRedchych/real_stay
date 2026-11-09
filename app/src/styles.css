@@ -604,3 +604,12 @@ h1[tabindex="-1"]:focus, h1[tabindex="-1"]:focus-visible { outline: none; }
 
 /* the inline icon sprite must never take layout space */
 svg[hidden], [hidden] { display: none !important; }
+
+/* ---------- upload UI fixes ---------- */
+/* an inline link inside a suggestion row is a link, not an option button */
+.suggest li > div { display: block; font-size: 0.9375rem; color: var(--ink-2); padding: 12px; min-height: 0; }
+.suggest li > div .inline-link { display: inline; width: auto; min-height: 0; padding: 0; margin-left: 4px; background: none; border-radius: 0; font-size: inherit; text-align: left; }
+.suggest li > div .inline-link:hover { background: none; text-decoration-thickness: 2px; }
+/* the submit bar needs room under it when it is not sticky */
+@container app (min-width: 760px) { .submitbar { padding-block: 16px 56px; } }
+@container app (max-width: 759px) { .steps { padding-bottom: 24px; } }
