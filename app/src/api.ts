@@ -17,7 +17,10 @@ export interface Signal { kind: string; level: 'ok' | 'warn' | 'neutral'; text: 
 export interface QueueItem extends UploadView { hotelName: string; hotelPlace: string; hotelPending: boolean; contributorName: string; account: { ageDays: number; approved: number; rejected: number }; signals: Signal[] }
 export interface Account { id: string; name: string; isModerator: boolean }
 
-export class ApiError extends Error { constructor(public status: number, public messages: string[]) { super(messages.join(' ')); } }
+export class ApiError extends Error {
+  status: number; messages: string[];
+  constructor(status: number, messages: string[]) { super(messages.join(' ')); this.status = status; this.messages = messages; }
+}
 
 async function call<T>(path: string, init: RequestInit = {}, token?: string | null): Promise<T> {
   const headers: Record<string, string> = { ...(init.headers as Record<string, string> || {}) };

@@ -1,11 +1,11 @@
-import { Controller, Get, Module, NotFoundException, Param, Query } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Module, NotFoundException, Param, Post, Query } from '@nestjs/common';
 import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { Hotel, Upload } from '../entities';
 import { PhotoStorage } from '../storage/photo-storage';
 import { hotelView, HotelView, uploadView, UploadView } from '../views';
 import { isCityQuery, matches, near, norm } from '../domain/search';
-import { byStayDesc } from '../domain/trust';
+import { byStayDesc, distanceMetres, locationResult } from '../domain/trust';
 
 export type SearchMode = 'all' | 'city' | 'exact' | 'fuzzy' | 'none';
 export interface SearchResult { q: string; mode: SearchMode; hotels: HotelView[]; near: HotelView[]; openDirectly: string | null }
@@ -66,6 +66,17 @@ export class HotelsController {
     else list.sort(byStayDesc);
     const counts = await this.contributionCounts(list.map((u) => u.account.id));
     return Promise.all(list.map((u) => uploadView(u, this.storage, counts.get(u.account.id) || 1)));
+  }
+
+  /** Stateless preview of the location check, so the contributor sees near / far before submitting. Nothing is stored. */
+  @Post(':id/location-preview')
+  async locationPreview(@Param('id') id: string, @Body() body: { lat?: number; lng?: number }) {
+    const h = await this.hotels.findOne({ where: { id } });
+    if (!h) throw new NotFoundException('No such hotel');
+    const lat = Number(body?.lat), lng = Number(body?.lng);
+    if (!isFinite(lat) || !isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) throw new BadRequestException('A device position is needed for the check.');
+    if (h.lat == null || h.lng == null) return { result: 'not_run' };
+    return { result: locationResult(distanceMetres(lat, lng, h.lat, h.lng), Number(process.env.NEAR_RADIUS_M || 500)) };
   }
 
   private async contributionCounts(accountIds: string[]): Promise<Map<string, number>> {
