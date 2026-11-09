@@ -73,4 +73,14 @@ export function useDebounced<T>(value: T, ms: number): T {
   return v;
 }
 
-export const useQueryState = () => useMemo(() => ({ get: () => sessionStorage.getItem('rs-q') || '', set: (q: string) => sessionStorage.setItem('rs-q', q) }), []);
+export const useQueryState = () => useMemo(() => ({
+  get: () => { try { return sessionStorage.getItem('rs-q') || ''; } catch { return ''; } },
+  set: (q: string) => { try { sessionStorage.setItem('rs-q', q); } catch { /* storage unavailable */ } window.dispatchEvent(new Event('rs-query')); },
+}), []);
+/** The current search query, updated when any search box sets it (clear, submit, suggestion). */
+export function useQuery(): string {
+  const qs = useQueryState();
+  const [q, setQ] = useState(qs.get);
+  useEffect(() => { const on = () => setQ(qs.get()); window.addEventListener('rs-query', on); return () => window.removeEventListener('rs-query', on); }, [qs]);
+  return q;
+}

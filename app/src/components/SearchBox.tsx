@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { api, type HotelView } from '../api';
-import { Icon, fmtMonthShort, go, plural, useDebounced, useQueryState } from '../ui';
+import { Icon, fmtMonthShort, go, plural, useDebounced, useHash, useQueryState } from '../ui';
 
 type Item = { kind: 'city'; label: string; q: string; count: number } | { kind: 'hotel'; hotel: HotelView };
 
@@ -16,6 +16,7 @@ export default function SearchBox({ initial = '', big = true }: { initial?: stri
   const id = useId();
   const qs = useQueryState();
   const box = useRef<HTMLDivElement>(null);
+  const onResults = useHash() === 'search';
 
   useEffect(() => {
     let live = true;
@@ -62,7 +63,7 @@ export default function SearchBox({ initial = '', big = true }: { initial?: stri
           <Icon id="i-search" cls="ic-lead" />
           <input className="input" id={id} name="q" type="search" placeholder="Hotel name or city" value={q} maxLength={100} autoComplete="off" role="combobox" aria-expanded={showList} aria-controls={`${id}-list`} aria-autocomplete="list" aria-activedescendant={idx >= 0 ? `${id}-opt-${idx}` : undefined}
             onChange={(e) => { setQ(e.target.value); setOpen(true); setIdx(-1); }} onFocus={() => setOpen(true)} onKeyDown={onKey} />
-          {q && <button type="button" className="btn-clear" aria-label="Clear search" onClick={() => { setQ(''); setItems([]); document.getElementById(id)?.focus(); }}><Icon id="i-x" /></button>}
+          {q && <button type="button" className="btn-clear" aria-label="Clear search" onClick={() => { setQ(''); setItems([]); if (onResults) qs.set(''); document.getElementById(id)?.focus(); }}><Icon id="i-x" /></button>}
         </div>
         <button className={`btn btn-primary${big ? '' : ' btn-sm'}`} type="submit">Search</button>
       </form>
