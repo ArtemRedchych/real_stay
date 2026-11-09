@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { api, type HotelView, type UploadView } from '../api';
 import { Icon, TrustTag, fmtDate, fmtMonth, fmtMonthShort, go, plural, trapTab, useFocusHeading, useQueryState, useToast } from '../ui';
 import { setDraft, getDraft } from '../draft';
@@ -79,21 +79,42 @@ export default function Hotel({ id }: { id: string }) {
   const [hotel, setHotel] = useState<HotelView | null | undefined>(undefined);
   const [cat, setCat] = useState('all');
   const [sort, setSort] = useState<Sort>('stay');
-  const [list, setList] = useState<UploadView[] | null>(null);
+  const [all, setAll] = useState<UploadView[]>([]);
   const [open, setOpen] = useState<string | null>(null);
   const returnTo = useRef<string | null>(null);
   const qs = useQueryState();
   useFocusHeading(hotel?.id);
 
-  useEffect(() => { setHotel(undefined); setCat('all'); setSort('stay'); api.hotel(id).then(setHotel).catch(() => setHotel(null)); }, [id]);
-  const load = useCallback(() => { setList(null); api.uploads(id, cat, sort).then(setList).catch(() => setList([])); }, [id, cat, sort]);
-  useEffect(() => { if (hotel) load(); }, [hotel, load]);
+  useEffect(() => {
+    let live = true;
+    setHotel(undefined); setCat('all'); setSort('stay'); setAll([]);
+    // hotel and uploads arrive together, so the page renders once instead of in three steps
+    Promise.all([api.hotel(id), api.uploads(id, 'all', 'stay')])
+      .then(([h, u]) => { if (live) { setAll(u); setHotel(h); } })
+      .catch(() => { if (live) setHotel(null); });
+    return () => { live = false; };
+  }, [id]);
+  const list = useMemo(() => {
+    const l = cat === 'all' ? all.slice() : all.filter((u) => u.roomType === cat);
+    const byStay = (a: UploadView, b: UploadView) => (a.stayMonth === b.stayMonth ? b.uploadedAt.localeCompare(a.uploadedAt) : a.stayMonth < b.stayMonth ? 1 : -1);
+    if (sort === 'added') l.sort((a, b) => b.uploadedAt.localeCompare(a.uploadedAt));
+    else if (sort === 'oldest') l.sort((a, b) => -byStay(a, b));
+    else l.sort(byStay);
+    return l;
+  }, [all, cat, sort]);
 
-  if (hotel === undefined) return <div className="wrap"><p className="loading-line">Loading hotel…</p></div>;
+  if (hotel === undefined) return (
+    <div className="wrap" aria-busy="true" aria-label="Loading hotel">
+      <span className="crumb" aria-hidden="true"><Icon id="i-arrow-l" />Back</span>
+      <div className="hotel-head"><div className="stack" style={{ gap: 10 }}><div className="skel skel-text" style={{ width: '46%', height: 34 }} /><div className="skel skel-text" style={{ width: '58%' }} /><div className="skel skel-text" style={{ width: '40%' }} /></div></div>
+      <div className="gallery-tools"><div className="chips" aria-hidden="true">{[88, 150, 130, 120].map((w, i) => <span key={i} className="skel skel-chip" style={{ width: w }} />)}</div></div>
+      <span className="sr-only">Loading hotel</span>
+    </div>
+  );
   if (hotel === null) return <div className="wrap"><div className="empty" style={{ marginTop: 24 }}><Icon id="i-search" /><h3>We couldn’t find that hotel</h3><a className="btn btn-secondary" href="#home">Back to search</a></div></div>;
 
   const shareFor = (roomType?: string | null) => { setDraft({ hotel, newHotel: null, roomType: roomType && roomType !== 'all' ? roomType : getDraft().roomType }); go('upload'); };
-  const filtered = list || [];
+  const filtered = list;
   const latest = filtered.length ? filtered.slice().sort((a, b) => (a.stayMonth < b.stayMonth ? 1 : a.stayMonth > b.stayMonth ? -1 : 0))[0] : null;
   const stale = !!latest?.stale;
   const q = qs.get();
@@ -123,12 +144,11 @@ export default function Hotel({ id }: { id: string }) {
               {hotel.roomTypes.map((r) => chip(r.name, r.name, r.photoCount, r.stale))}
             </div>
             <div className="toolbar">
-              <p className="fresh" aria-live="polite">{list === null ? 'Loading photos…' : filtered.length ? <><span className="n">{plural(filtered.reduce((n, u) => n + u.photos.length, 0), 'photo')}{cat !== 'all' ? ` of ${cat}` : ''} · </span>Latest stay <b>{fmtMonthShort(latest!.stayMonth)}</b></> : `No photos of ${cat} yet`}</p>
+              <p className="fresh" aria-live="polite">{filtered.length ? <><span className="n">{plural(filtered.reduce((n, u) => n + u.photos.length, 0), 'photo')}{cat !== 'all' ? ` of ${cat}` : ''} · </span>Latest stay <b>{fmtMonthShort(latest!.stayMonth)}</b></> : `No photos of ${cat} yet`}</p>
               <div className="sort"><label htmlFor="sort" className="small sort-label">Sort</label><select className="input" id="sort" value={sort} onChange={(e) => setSort(e.target.value as Sort)}><option value="stay">Most recent stay</option><option value="added">Recently added</option><option value="oldest">Oldest stay first</option></select></div>
             </div>
           </div>
-          {list === null ? <div className="gallery" aria-busy="true" aria-label="Loading photos">{[...Array(8)].map((_, i) => <div key={i}><div className="skel skel-ph" /><div className="skel skel-line" /><div className="skel skel-line short" /></div>)}</div>
-            : filtered.length ? (
+          {filtered.length ? (
               <>
                 {stale && <div className="notice notice-warn stale"><Icon id="i-clock" /><div><p><b>No photos from stays in the last 12 months{cat !== 'all' ? ` in ${cat}` : ''}.</b> The most recent stay shown is {fmtMonth(latest!.stayMonth)}, so these may not show the room as it is now.</p><p><button className="inline-link" onClick={() => shareFor(cat)}>Share a recent photo</button></p></div></div>}
                 <div className="gallery">{filtered.map((u) => <UploadCard key={u.id} u={u} onOpen={() => { returnTo.current = `pc-${u.id}`; setOpen(u.id); }} />)}</div>

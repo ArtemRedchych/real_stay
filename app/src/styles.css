@@ -613,3 +613,7 @@ svg[hidden], [hidden] { display: none !important; }
 /* the submit bar needs room under it when it is not sticky */
 @container app (min-width: 760px) { .submitbar { padding-block: 16px 56px; } }
 @container app (max-width: 759px) { .steps { padding-bottom: 24px; } }
+
+/* ---------- hotel page skeleton (one quiet frame, no tiles) ---------- */
+.skel-text { height: 18px; border-radius: 6px; }
+.skel-chip { display: inline-block; height: 44px; border-radius: 999px; }
