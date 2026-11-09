@@ -617,3 +617,4 @@ svg[hidden], [hidden] { display: none !important; }
 /* ---------- hotel page skeleton (one quiet frame, no tiles) ---------- */
 .skel-text { height: 18px; border-radius: 6px; }
 .skel-chip { display: inline-block; height: 44px; border-radius: 999px; }
+.wrap[aria-busy="true"] { min-height: 70vh; }
