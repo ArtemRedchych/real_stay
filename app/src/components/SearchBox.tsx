@@ -60,7 +60,7 @@ export default function SearchBox({ initial = '', big = true }: { initial?: stri
         <label className="sr-only" htmlFor={id}>Search for a hotel by name or city</label>
         <div className="input-wrap">
           <Icon id="i-search" cls="ic-lead" />
-          <input className="input" id={id} name="q" type="search" placeholder="Hotel name or city" value={q} autoComplete="off" role="combobox" aria-expanded={showList} aria-controls={`${id}-list`} aria-autocomplete="list" aria-activedescendant={idx >= 0 ? `${id}-opt-${idx}` : undefined}
+          <input className="input" id={id} name="q" type="search" placeholder="Hotel name or city" value={q} maxLength={100} autoComplete="off" role="combobox" aria-expanded={showList} aria-controls={`${id}-list`} aria-autocomplete="list" aria-activedescendant={idx >= 0 ? `${id}-opt-${idx}` : undefined}
             onChange={(e) => { setQ(e.target.value); setOpen(true); setIdx(-1); }} onFocus={() => setOpen(true)} onKeyDown={onKey} />
           {q && <button type="button" className="btn-clear" aria-label="Clear search" onClick={() => { setQ(''); setItems([]); document.getElementById(id)?.focus(); }}><Icon id="i-x" /></button>}
         </div>

@@ -26,7 +26,7 @@ export default function Moderation() {
     <div className="wrap mod"><div className="mod-head"><div><span className="eyebrow">Internal</span><h1>Moderation queue</h1></div></div>
       <form className="mod-login card card-pad" onSubmit={async (e) => { e.preventDefault(); setErr(null); try { const r = await api.devSignIn(name.trim(), true); writeSession({ token: r.token, account: r.account }); } catch (ex) { setErr(ex instanceof Error ? ex.message : 'Sign-in failed'); } }}>
         <p>Moderators sign in with their work account. In this prototype a name is enough; the moderator flag is granted by the development sign-in.</p>
-        <div className="field"><label htmlFor="modName">Your name</label><input className="input" id="modName" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Sam Moderator" /></div>
+        <div className="field"><label htmlFor="modName">Your name</label><input className="input" id="modName" value={name} maxLength={60} onChange={(e) => setName(e.target.value)} placeholder="e.g. Sam Moderator" /></div>
         {err && <p className="error"><Icon id="i-alert" />{err}</p>}
         <button className="btn btn-primary" type="submit">Open the queue</button>
       </form></div>
@@ -67,7 +67,7 @@ export default function Moderation() {
               <div className="mod-reason" role="group" aria-labelledby="rsnT">
                 <p id="rsnT"><b>{mode === 'reject' ? 'Reject this submission' : 'Request a correction'}</b></p>
                 <div className="field"><label htmlFor="rsn">Reason</label><select className="input" id="rsn" value={reason} onChange={(e) => setReason(e.target.value)} autoFocus><option value="">Choose a reason</option>{reasons.map((r) => <option key={r}>{r}</option>)}</select></div>
-                <div className="field"><label htmlFor="rsnMsg">Message to the contributor <span className="muted">(optional)</span></label><textarea className="input" id="rsnMsg" value={msg} onChange={(e) => setMsg(e.target.value)} placeholder={mode === 'reject' ? 'e.g. Photo 2 shows a person’s face.' : 'e.g. These look like a Superior King. Could you check your booking?'} /></div>
+                <div className="field"><label htmlFor="rsnMsg">Message to the contributor <span className="muted">(optional)</span></label><textarea className="input" id="rsnMsg" value={msg} maxLength={500} onChange={(e) => setMsg(e.target.value)} placeholder={mode === 'reject' ? 'e.g. Photo 2 shows a person’s face.' : 'e.g. These look like a Superior King. Could you check your booking?'} /></div>
                 <div className="row" style={{ justifyContent: 'flex-end' }}><button className="btn btn-secondary" onClick={() => setMode(null)}>Cancel</button><button className={`btn ${mode === 'reject' ? 'btn-danger' : 'btn-primary'}`} disabled={!reason} onClick={() => act(mode === 'reject' ? 'reject' : 'request-correction', { reason, message: msg })}>{mode === 'reject' ? 'Reject and notify' : 'Send request'}</button></div>
               </div>
             ) : <div className="mod-actions"><button className="btn btn-primary" onClick={() => act('approve')}><Icon id="i-check" />Approve</button><button className="btn btn-secondary" onClick={() => { setMode('correct'); setReason(''); }}>Request correction</button><button className="btn btn-danger" onClick={() => { setMode('reject'); setReason(''); }}>Reject</button></div>}

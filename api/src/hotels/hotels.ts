@@ -31,6 +31,7 @@ export class HotelsController {
   /** Search. Word-based, any order, accents ignored, one typo tolerated on longer words. */
   @Get()
   async search(@Query('q') q = ''): Promise<SearchResult> {
+    q = String(q).slice(0, 100);
     const all = await this.hotels.find({ where: { status: 'seeded' }, relations: { roomTypes: true } });
     const published = await this.publishedByHotel();
     if (!norm(q)) return { q, mode: 'all', hotels: await this.views(all, published), near: [], openDirectly: null };

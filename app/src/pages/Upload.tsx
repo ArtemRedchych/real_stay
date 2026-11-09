@@ -14,12 +14,12 @@ function HotelPicker({ d, err }: { d: Draft; err?: string }) {
   if (d.newHotel) return (
     <>
       <div className="picked"><span className="ph"><Icon id="i-plus" /></span><div className="t"><b>{d.newHotel.name || 'New hotel'}</b><span>{d.newHotel.city || 'City not set'} · will be added after review</span></div><button className="btn btn-secondary btn-sm" onClick={() => setDraft({ newHotel: null, roomType: null })}>Change</button></div>
-      <div className="date-row"><div className="field"><label htmlFor="nhName">Hotel name</label><input className="input" id="nhName" value={d.newHotel.name} autoComplete="off" onChange={(e) => setDraft({ newHotel: { name: e.target.value, city: d.newHotel!.city } })} /></div><div className="field"><label htmlFor="nhCity">City</label><input className="input" id="nhCity" value={d.newHotel.city} autoComplete="off" onChange={(e) => setDraft({ newHotel: { name: d.newHotel!.name, city: e.target.value } })} /></div></div>
+      <div className="date-row"><div className="field"><label htmlFor="nhName">Hotel name</label><input className="input" id="nhName" value={d.newHotel.name} maxLength={80} autoComplete="off" onChange={(e) => setDraft({ newHotel: { name: e.target.value, city: d.newHotel!.city } })} /></div><div className="field"><label htmlFor="nhCity">City</label><input className="input" id="nhCity" value={d.newHotel.city} maxLength={60} autoComplete="off" onChange={(e) => setDraft({ newHotel: { name: d.newHotel!.name, city: e.target.value } })} /></div></div>
     </>
   );
   return (
     <div className="field"><label htmlFor="uq">Hotel name or city</label>
-      <div className="searchbox"><div className="input-wrap"><Icon id="i-search" cls="ic-lead" /><input className="input" id="uq" type="search" value={d.hotelQ} placeholder="Start typing, e.g. Marlow" autoComplete="off" aria-invalid={err ? true : undefined} aria-describedby={err ? 'err-hotel' : undefined} onChange={(e) => setDraft({ hotelQ: e.target.value })} /></div>
+      <div className="searchbox"><div className="input-wrap"><Icon id="i-search" cls="ic-lead" /><input className="input" id="uq" type="search" value={d.hotelQ} maxLength={100} placeholder="Start typing, e.g. Marlow" autoComplete="off" aria-invalid={err ? true : undefined} aria-describedby={err ? 'err-hotel' : undefined} onChange={(e) => setDraft({ hotelQ: e.target.value })} /></div>
         <div className="suggest-host">{d.hotelQ.trim().length >= 2 && (
           <div className="suggest"><ul>
             {items.length === 0 && <li><div className="s-sub">No hotel called “{d.hotelQ}”. <button className="inline-link" onClick={() => setDraft({ newHotel: { name: d.hotelQ, city: '' } })}>Add it</button></div></li>}
