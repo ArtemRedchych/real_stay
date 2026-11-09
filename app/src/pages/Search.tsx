@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api, type HotelView, type SearchResult } from '../api';
 import SearchBox from '../components/SearchBox';
-import { Icon, fmtMonthShort, go, plural, useFocusHeading, useQueryState } from '../ui';
+import { Icon, fmtMonthShort, go, plural, useFocusHeading, useQuery } from '../ui';
 import { setDraft, freshDraft } from '../draft';
 
 function List({ hotels }: { hotels: HotelView[] }) {
@@ -16,10 +16,9 @@ function List({ hotels }: { hotels: HotelView[] }) {
 }
 
 export default function Search() {
-  const qs = useQueryState();
-  const q = qs.get();
+  const q = useQuery();
   const [r, setR] = useState<SearchResult | null>(null);
-  useFocusHeading(r);
+  useFocusHeading('search'); // on entering the page only; in-page query changes keep focus in the search box
   useEffect(() => { setR(null); api.search(q).then(setR).catch(() => setR({ q, mode: 'none', hotels: [], near: [], openDirectly: null })); }, [q]);
   const addHotel = () => { setDraft({ ...freshDraft(), newHotel: { name: q, city: '' } }); go('upload'); };
   const title = !r ? 'Searching…' : !q ? 'All hotels' : r.mode === 'city' ? `Hotels in ${r.hotels[0]?.city || q}` : r.mode === 'fuzzy' ? `Closest ${r.hotels.length === 1 ? 'match' : 'matches'} for “${q}”` : r.hotels.length ? `${plural(r.hotels.length, 'hotel')} match “${q}”` : `No hotel matches “${q}”`;
