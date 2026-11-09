@@ -1,5 +1,5 @@
-# Checks on every push and PR; deploy to the Dialogis production GCP project on main.
-# Identities and targets are the outputs of the hosting PR (dialogis_infra#42) and are the defaults below;
+# Checks on every push and PR; deploy to the hosting GCP project on main.
+# Identities and targets are the Terraform outputs of the hosting setup and are the defaults below;
 # a repository variable of the same name overrides any of them. Only refs/heads/main can obtain the identities.
 name: CI and deploy
 

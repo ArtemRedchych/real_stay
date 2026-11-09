@@ -2,11 +2,11 @@
 
 **See what previous guests actually saw.** Search a hotel, pick the room type you booked, and see recent photos shared by guests who stayed in it: each one labeled with how it was checked and when the stay was. Stayed somewhere? Share up to three photos of your room in about a minute; you sign in only at the last step, and a moderator looks at every upload before it is published.
 
-A take-home for Mews, built in a three-hour window on 9 Nov 2026 after a design pass the day before. It is a functional prototype: real API, real database, real uploads, real moderation. It is not finished software, and this README says where the edges are.
+A take-home for Mews, built within a three-hour budget on 9 Nov 2026 after a design pass the day before. It is a functional prototype: real API, real database, real uploads, a real moderation queue. It is not finished software, and this README says where the edges are, including the ones that matter for trust and access control.
 
 - **Run it:** `docker compose up` then open <http://localhost:8080> (API at <http://localhost:4000>, seeded on first boot).
-- **Hosted:** <https://realstay.dialogislabs.com> once the infrastructure PR ([dialogis_infra#42](https://github.com/ArtemRedchych/dialogis_infra/pull/42)) is applied and this repository's `main` has deployed once.
-- **Moderate:** footer → "Moderation (internal)" → sign in with any name; the prototype grants the moderator flag to that development sign-in.
+- **Hosted:** <https://realstay.dialogislabs.com> (Google Cloud: Cloud Run, Cloud SQL, Cloud Storage; deployed from this repository on every push to `main`).
+- **Moderate:** footer → "Moderation (internal)". In this prototype the development sign-in grants the moderator role to whoever asks for it; see Known limitations.
 - **Design prototype** (what the build was ported from, with the design system and the UX critique): open `docs/prototype/index.html` in a browser.
 
 ## The five decisions that shaped it
@@ -30,7 +30,7 @@ A take-home for Mews, built in a three-hour window on 9 Nov 2026 after a design 
 
 | Choice | Instead of | Why, and what it costs |
 |---|---|---|
-| React + Vite | Flutter (the team's mobile stack) | The design prototype was already HTML/CSS/JS; porting kept the UI and accessibility work intact in under an hour. Costs: a second front-end stack. |
+| React + Vite | Flutter (my usual mobile stack) | The design prototype was already HTML/CSS/JS; porting kept the UI and accessibility work intact in under an hour. Costs: a second front-end stack. |
 | NestJS + TypeORM + Postgres | Firebase | Relational model and SQL-shaped queries (group by upload, order by stay, stale per room type); the reviewer can run it without creating a cloud project. Costs: no hosted auth for free. |
 | `synchronize: true` schema | generated migrations | Three-hour budget; the entities are the schema. A production service would switch to migrations before the first real deploy. |
 | Development sign-in (a name becomes an account) behind a provider interface | Google / Apple sign-in | Real OAuth needs a consent screen and project configuration the reviewer must reproduce. The whole flow runs; the swap is one provider class and one button. Costs: the prototype's accounts are not real identities. |
@@ -52,17 +52,30 @@ Design and system notes: [docs/architecture.md](docs/architecture.md) (component
 
 - **Google and Apple sign-in.** Provider interface and UI slot exist; configuration time was spent on the system instead.
 - **Email notifications.** The confirmation screen says we email; nothing sends. Needs a sender.
-- **Report handling.** Reports are stored; no moderator UI for them yet.
+- **Report handling.** The viewer's "Report" dialog is UI only: nothing is stored or routed yet. The data model has a `report` table for it.
 - **Duplicate detection.** The moderation screen has the slot; a perceptual hash per photo is the obvious next signal.
-- **Rate limiting, image classification, multi-moderator locking, a CDN.** See the "10×" section of the architecture doc.
-- **Hosting is wired, not yet live.** Cloud Run service, Cloud SQL database, photo bucket, static origin and the GitHub identity binding are defined in [dialogis_infra#42](https://github.com/ArtemRedchych/dialogis_infra/pull/42); `.github/workflows/ci-deploy.yml` deploys on push to `main` with those outputs as defaults, so nothing needs to be configured by hand once the infrastructure is applied.
+- **Rate limiting in the app, image classification, multi-moderator locking, a CDN for photos.** See the "10×" section of the architecture doc.
+- **Real sign-in and access control.** See Known limitations below.
+
+## Known limitations of the demo
+
+- **Sign-in is development-grade.** Any name becomes an account, and the moderation page grants the moderator role to any name. This is fine for a reviewer trying the flow; it is not an access-control model. The first production step is the provider swap (Google / Apple) and a real moderator list, after which the development provider is disabled by configuration (`AUTH_PROVIDER`).
+- **Nothing proves where a photo was taken.** The location check compares a position sent by the browser with the hotel's coordinates (500 m) and keeps only `near` / `far`; the EXIF capture date is read from the file as-is. Both are signals for the moderator and are labeled as such in the UI; neither is verification.
+- **Moderation is manual and single-moderator.** No assignment or locking beyond the 409 on an already-decided upload; no audit export.
+- **Uploads are processed in the request** (thumbnail, EXIF). HEIC thumbnails depend on the image library build and fall back to the original file. Pending photos are private objects; a signed URL issued to the owner or a moderator works for about two hours for anyone who has it.
+- **Schema and data.** The schema is synchronised from the entities (no migrations). The hosted database holds the seeded sample content plus a few test submissions from the build day.
+- **Verification.** Domain rules have unit tests and CI type-checks everything; the rest was checked with `curl` and scripted Playwright browser walks run from the development machine. The outputs are quoted in the verification files; the scripts themselves are not in this repository.
+
+## Hosting
+
+Cloud Run (API), a Cloud SQL Postgres database, a private Cloud Storage bucket for photos and a static origin for the app, behind one HTTPS load balancer at `realstay.dialogislabs.com`. The infrastructure is Terraform in a separate private repository I already operate; this repository's workflow (`.github/workflows/ci-deploy.yml`) builds the API image, rolls the service and syncs the app on every push to `main`, authenticating with Workload Identity Federation (no stored cloud keys).
 
 ## The next three hours
 
 1. Google sign-in via Firebase Auth (the provider swap), then turn the development provider off in the hosted build.
 2. Reports queue for moderators and a perceptual-hash duplicate signal.
 3. Migrations instead of `synchronize`, and the thumbnail job off the request path.
-4. A proper e2e suite over the API (today: domain unit tests plus a scripted browser walk; see the verification files).
+4. A proper e2e suite over the API, with the browser walks committed to the repository (today: domain unit tests plus scripted browser walks run from the development machine).
 
 ## Repository map
 

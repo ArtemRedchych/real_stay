@@ -89,7 +89,7 @@ Search: tokens in any order, accents stripped, each token a prefix of a word in 
 - Writes need an account; the dev provider is clearly labelled and disabled by configuration in any environment that sets a real provider.
 - Photos are private objects served through signed URLs (GCS) or the API (local). Nothing is public by bucket policy.
 - Contributors choose "first name and initial" or "anonymous"; emails are never stored (the provider subject is).
-- Not built: rate limiting beyond a per-token cap, image classification, duplicate detection (a perceptual hash per photo is the obvious next signal), report handling UI (reports are stored, not yet surfaced).
+- Not built: rate limiting beyond a per-token cap, image classification, duplicate detection (a perceptual hash per photo is the obvious next signal), report handling (the viewer's Report dialog is UI only; the `report` table exists, nothing writes to it yet).
 
 ## What breaks first at 10× or 100×
 
@@ -102,4 +102,4 @@ Search: tokens in any order, accents stripped, each token a prefix of a word in 
 ## Deployment
 
 - `docker compose up`: Postgres, API (seeds on first boot), app on nginx.
-- Hosted: Cloud Run (API; GCS storage is inferred from `PHOTO_BUCKET`; the load balancer forwards `/api/*` unchanged and the API strips that prefix at its edge, so `/health` works for probes and `/api/health` for the public), Cloud SQL database on a shared instance, GCS bucket for photos, static origin behind the existing load balancer at `realstay.dialogislabs.com`, all defined in the Dialogis infrastructure repository; GitHub Actions deploy on push to `main` via Workload Identity Federation (`.github/workflows/ci-deploy.yml`).
+- Hosted: Cloud Run (API; GCS storage is inferred from `PHOTO_BUCKET`; the load balancer forwards `/api/*` unchanged and the API strips that prefix at its edge, so `/health` works for probes and `/api/health` for the public), Cloud SQL database on a shared instance, GCS bucket for photos, static origin behind the existing load balancer at `realstay.dialogislabs.com`, all defined as Terraform in a separate private infrastructure repository; GitHub Actions deploy on push to `main` via Workload Identity Federation (`.github/workflows/ci-deploy.yml`).
