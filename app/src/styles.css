@@ -625,3 +625,14 @@ svg[hidden], [hidden] { display: none !important; }
 .viewer-img-wrap .viewer-full { opacity: 0; }
 .viewer-img-wrap.is-loaded .viewer-full { opacity: 1; }
 @media (prefers-reduced-motion: no-preference) { .viewer-img-wrap .viewer-full { transition: opacity .25s ease; } }
+
+/* ---------- user text can never widen the layout ---------- */
+body { overflow-wrap: anywhere; }
+.btn, .chip, .trust, .status, .pill, .kbd, .counter, .limits span, .sort, .pbadge { overflow-wrap: normal; }
+.picked .t b, .picked .t span, .viewer-info h2, .viewer-info .note, .viewer-info dd, .kv dd, .mod-item b, .mod-item span, .results-head h1, .res h3, .hotel-head h1, .hcard h3, .suggest .s-main, .suggest .s-sub, .empty h3, .empty p, .closest h2, .sub-summary span, .notice p, .file-errors .error b { min-width: 0; overflow-wrap: anywhere; }
+.mod-item > span { min-width: 0; }
+.suggest button > span { min-width: 0; }
+.res > div { min-width: 0; }
+.sub-summary { align-items: flex-start; }
+.submitbar .hint { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mod-head .eyebrow { display: block; max-width: 100%; }

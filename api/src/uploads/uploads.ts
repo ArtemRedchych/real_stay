@@ -52,7 +52,7 @@ export class UploadsController {
       hotel = await this.hotels.save(this.hotels.create({ id: slug(`${body.newHotelName}-${body.newHotelCity}`), name: body.newHotelName.trim().slice(0, 80), type: 'Hotel', area: '', city: body.newHotelCity.trim().slice(0, 60), country: '', status: 'pending', roomTypes: [] }));
     }
     if (!hotel) problems.push('Choose the hotel (or add its name and city).');
-    const roomType = (body.roomType || '').trim();
+    const roomType = (body.roomType || '').trim().slice(0, 60);
     if (!roomType) problems.push('Choose the room type, or pick “Not sure”.');
     else if (hotel && hotel.status === 'seeded' && roomType !== 'Not sure' && !(hotel.roomTypes || []).some((r) => r.name === roomType)) problems.push(`“${roomType}” isn’t a room type of ${hotel.name}.`);
     if (problems.length) throw new BadRequestException({ message: problems });
