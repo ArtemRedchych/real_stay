@@ -1,0 +1,108 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><style>body{margin:0;font:14px system-ui}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>RealStay</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Figtree:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+
+<svg hidden aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 8h3.2l1.8-3h6l1.8 3H20v11H4z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><path d="M9.6 10.2l1.7 1.7 3.2-3.4"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12l4.5 4.5L19 7"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-chev-l" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-chev-r" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+  <symbol id="i-chev-d" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-arrow-l" viewBox="0 0 24 24"><path d="M19 12H5m6-7l-7 7 7 7"/></symbol>
+  <symbol id="i-arrow-r" viewBox="0 0 24 24"><path d="M5 12h14m-6-7l7 7-7 7"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4h11l-1.5 4L16 12H5"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4m-5 5l5-5 5 5M4 20h16"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="M21 16l-5-5-9 9"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3l10 18H2z"/><path d="M12 10v4M12 17h.01"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+  <symbol id="i-sort" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></symbol>
+  <symbol id="i-retry" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-building" viewBox="0 0 24 24"><path d="M4 21V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v16M15 10h4a1 1 0 0 1 1 1v10M4 21h17M8 8h3M8 12h3M8 16h3"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-aperture" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M14.3 15.9L8.9 6.6M18.4 8.4H7.6M21 13.5l-5.4-9.3M9.7 8.1l5.4 9.3M5.6 15.6h10.8M3 10.5l5.4 9.3"/></symbol>
+</svg>
+
+<div class="proto-bar" role="region" aria-label="Prototype controls">
+  <div class="proto-name"><span class="dot" aria-hidden="true"></span>RealStay <span class="tag">clickable prototype</span></div>
+  <div class="proto-controls">
+    <div class="seg" role="group" aria-label="Preview width">
+      <button type="button" data-mode="phone" aria-pressed="false">Phone · 390</button>
+      <button type="button" data-mode="desktop" aria-pressed="true">Desktop</button>
+    </div>
+    <label>Screen
+      <select id="protoScreen" aria-label="Jump to screen">
+        <option value="home">1 · Homepage</option>
+        <option value="search">2 · Search results</option>
+        <option value="hotel-marlow">3 · Hotel gallery</option>
+        <option value="viewer">4 · Photo viewer</option>
+        <option value="upload">5 · Upload</option>
+        <option value="signin">6 · Sign in</option>
+        <option value="submitted">7 · Confirmation</option>
+        <option value="moderation">8 · Moderation</option>
+        <option value="system">Design system</option>
+        <option value="decisions">UX decisions &amp; critique</option>
+      </select>
+    </label>
+    <label>State
+      <select id="protoState" aria-label="Show a specific state">
+        <option value="">Pick a state…</option>
+        <optgroup label="Search">
+          <option value="home-suggestions">Search suggestions</option>
+          <option value="search-similar">Similarly named hotels</option>
+          <option value="search-fuzzy">Booking-style query with a typo</option>
+          <option value="search-none">No matching hotel</option>
+        </optgroup>
+        <optgroup label="Gallery">
+          <option value="gallery-loading">Gallery loading</option>
+          <option value="hotel-zero">Hotel with zero photos</option>
+          <option value="cat-empty">Room category with no photos</option>
+          <option value="cat-stale">Category with no recent photos</option>
+        </optgroup>
+        <optgroup label="Upload">
+          <option value="upload-progress">Upload in progress</option>
+          <option value="upload-badfile">Unsupported / oversized file</option>
+          <option value="upload-failed">Failed upload with retry</option>
+          <option value="upload-missing">Missing required information</option>
+          <option value="auth-required">Authentication required</option>
+          <option value="loc-declined">Location permission declined</option>
+          <option value="loc-far">Not near the hotel</option>
+        </optgroup>
+        <optgroup label="Submission">
+          <option value="sub-pending">Pending review</option>
+          <option value="sub-correction">Correction requested</option>
+          <option value="sub-rejected">Rejected</option>
+          <option value="sub-published">Published</option>
+        </optgroup>
+      </select>
+    </label>
+  </div>
+</div>
+
+<div class="stage" id="stage" data-mode="desktop">
+  <div class="device">
+    <div class="app" id="app">
+      <header class="topbar" id="topbar"></header>
+      <main id="main"></main>
+      <footer class="site" id="sitefoot"></footer>
+    </div>
+    <div id="layers"></div>
+    <div id="toasts" role="status" aria-live="polite"></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body></html>

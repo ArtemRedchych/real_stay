@@ -8,6 +8,8 @@ import { seed } from './seed';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  // Behind the shared load balancer the API is mounted under /api; locally it is the root.
+  if (process.env.API_PREFIX) app.setGlobalPrefix(process.env.API_PREFIX.replace(/^\//, ''));
   const origins = (process.env.APP_ORIGIN || 'http://localhost:5173').split(',').map((s) => s.trim());
   app.enableCors({ origin: origins, credentials: false });
   if (process.env.STORAGE !== 'gcs') {

@@ -601,3 +601,6 @@ h1[tabindex="-1"]:focus, h1[tabindex="-1"]:focus-visible { outline: none; }
 .dev-note .ic { flex: none; margin-top: 2px; }
 .mod-login { max-width: 440px; display: grid; gap: 12px; }
 .hero .hero-foot { margin-top: 12px; }
+
+/* the inline icon sprite must never take layout space */
+svg[hidden], [hidden] { display: none !important; }
