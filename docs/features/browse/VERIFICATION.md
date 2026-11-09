@@ -17,5 +17,5 @@ Run on 2026-11-09 against the API on the workstation database (seeded) and the V
 ## Evidence
 
 - `npx jest src/domain --maxWorkers=2` → `Tests: 8 passed, 8 total`.
-- Browser walk script: `scratch/e2e-realstay.js` (Playwright), output summarised above; screenshots in `docs/screenshots/`.
+- Browser walk: a Playwright script run from the development machine (not included in this repository); its output is summarised above and the screenshots are in `docs/screenshots/`.
 - One defect found and fixed during verification: the inline SVG icon sprite took 150 px of layout at the top of every page in the Vite build (the prototype's host supplied `[hidden]{display:none}`); fixed in `app/src/styles.css`, re-shot, header at 0 px on every page.

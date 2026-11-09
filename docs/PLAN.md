@@ -4,7 +4,7 @@
 
 ## Approach
 
-Monorepo: `api/` (NestJS + TypeORM + Postgres), `app/` (React + Vite, a port of the clickable prototype), `docs/`. Hosted on the Dialogis production GCP project through the existing `dialogis_infra` modules (separate PR), reviewers also get `docker compose up`.
+Monorepo: `api/` (NestJS + TypeORM + Postgres), `app/` (React + Vite, a port of the clickable prototype), `docs/`. Hosted on Google Cloud through existing Terraform modules in a separate private infrastructure repository; reviewers also get `docker compose up`.
 
 Three slices in order of user value, each with its own REQUIREMENTS and VERIFICATION under `docs/features/`:
 
