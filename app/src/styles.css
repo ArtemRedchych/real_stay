@@ -618,3 +618,10 @@ svg[hidden], [hidden] { display: none !important; }
 .skel-text { height: 18px; border-radius: 6px; }
 .skel-chip { display: inline-block; height: 44px; border-radius: 999px; }
 .wrap[aria-busy="true"] { min-height: 70vh; }
+
+/* ---------- viewer: thumbnail first, full image fades in ---------- */
+.viewer-img-wrap { position: relative; }
+.viewer-img-wrap .viewer-base, .viewer-img-wrap .viewer-full { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.viewer-img-wrap .viewer-full { opacity: 0; }
+.viewer-img-wrap.is-loaded .viewer-full { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) { .viewer-img-wrap .viewer-full { transition: opacity .25s ease; } }

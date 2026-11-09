@@ -30,10 +30,16 @@ export class GcsStorage extends PhotoStorage {
     this.bucket = new Storage().bucket(bucketName);
   }
   async put(key: string, data: Buffer, mime: string): Promise<void> {
-    await this.bucket.file(key).save(data, { contentType: mime, resumable: false });
+    await this.bucket.file(key).save(data, { contentType: mime, resumable: false, metadata: { cacheControl: 'private, max-age=86400' } });
   }
+  /**
+   * V4 signed URL whose signing time and expiry are rounded to a 15-minute window, so every request within the
+   * window produces the same URL and the browser can serve the image from cache instead of downloading it again.
+   */
   async url(key: string): Promise<string> {
-    const [signed] = await this.bucket.file(key).getSignedUrl({ action: 'read', expires: Date.now() + 60 * 60 * 1000 });
+    const WINDOW = 15 * 60 * 1000;
+    const start = Math.floor(Date.now() / WINDOW) * WINDOW;
+    const [signed] = await this.bucket.file(key).getSignedUrl({ version: 'v4', action: 'read', accessibleAt: new Date(start), expires: new Date(start + 2 * 60 * 60 * 1000) });
     return signed;
   }
 }
