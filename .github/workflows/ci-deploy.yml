@@ -86,6 +86,11 @@ jobs:
     env:
       IMAGE: ${{ needs.publish.outputs.image }}
       REGION: ${{ vars.GCP_REGION || 'europe-west3' }}
+      PROJECT: ${{ vars.GCP_PROJECT || 'dialogis-prod-472511' }}
+      SERVICE: ${{ vars.CLOUD_RUN_SERVICE || 'realstay-api' }}
+      APP_BUCKET: ${{ vars.APP_BUCKET || 'dialogis-prod-472511-edge-realstay' }}
+      API_URL: ${{ vars.API_URL || 'https://realstay.dialogislabs.com/api' }}
+      APP_URL: ${{ vars.APP_URL || 'https://realstay.dialogislabs.com' }}
     steps:
       - uses: actions/checkout@v4
       - name: Authenticate as the deployer
