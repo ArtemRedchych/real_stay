@@ -38,7 +38,7 @@ function Viewer({ hotel, u, onClose }: { hotel: HotelView; u: UploadView; onClos
         <button className="btn btn-light btn-sm" onClick={() => setReport('')}><Icon id="i-flag" />Report</button>
       </div>
       <div className="viewer-stage" onTouchStart={(e) => { tx.current = e.touches[0].clientX; }} onTouchEnd={(e) => { if (tx.current == null) return; const dx = e.changedTouches[0].clientX - tx.current; tx.current = null; if (Math.abs(dx) < 50) return; if (dx < 0) next(); else prev(); }}>
-        <div className="viewer-img-wrap"><img src={p.url} alt={`Guest photo ${i + 1} of ${u.photos.length} of a ${u.roomType} at ${hotel.name}, stay ${fmtMonth(u.stayMonth)}`} /></div>
+        <ViewerImage key={p.id} p={p} alt={`Guest photo ${i + 1} of ${u.photos.length} of a ${u.roomType} at ${hotel.name}, stay ${fmtMonth(u.stayMonth)}`} />
         <button className="btn btn-icon btn-light viewer-nav prev" onClick={prev} aria-label="Previous photo" disabled={i === 0}><Icon id="i-chev-l" /></button>
         <button className="btn btn-icon btn-light viewer-nav next" onClick={next} aria-label="Next photo" disabled={i === u.photos.length - 1}><Icon id="i-chev-r" /></button>
       </div>
@@ -56,6 +56,17 @@ function Viewer({ hotel, u, onClose }: { hotel: HotelView; u: UploadView; onClos
           <div className="actions"><button className="btn btn-secondary" onClick={() => setReport(null)}>Cancel</button><button className="btn btn-primary" disabled={!report} onClick={() => { setReport(null); toast('Thanks. A moderator will review this photo.'); }}>Send report</button></div>
         </div></div>
       )}
+    </div>
+  );
+}
+
+/** The thumbnail is already in the browser cache from the card, so it paints immediately; the full-size image fades in over it. */
+function ViewerImage({ p, alt }: { p: UploadView['photos'][number]; alt: string }) {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <div className={`viewer-img-wrap${loaded ? ' is-loaded' : ''}`}>
+      <img className="viewer-base" src={p.thumbUrl} alt="" aria-hidden="true" />
+      <img className="viewer-full" src={p.url} alt={alt} onLoad={() => setLoaded(true)} decoding="async" />
     </div>
   );
 }
