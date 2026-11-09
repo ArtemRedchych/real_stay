@@ -14,7 +14,7 @@ export class StorageModule {}
 
 @Controller()
 export class HealthController {
-  @Get('health') health() { return { ok: true, storage: process.env.STORAGE === 'gcs' ? 'gcs' : 'local', auth: process.env.AUTH_PROVIDER || 'dev' }; }
+  @Get('health') health() { return { ok: true, storage: process.env.STORAGE === 'gcs' || process.env.PHOTO_BUCKET ? 'gcs' : 'local', auth: process.env.AUTH_PROVIDER || 'dev' }; }
 }
 
 export function typeOrmOptions() {

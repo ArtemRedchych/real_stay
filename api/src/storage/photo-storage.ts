@@ -39,7 +39,7 @@ export class GcsStorage extends PhotoStorage {
 }
 
 export function storageFromEnv(env: NodeJS.ProcessEnv): PhotoStorage {
-  if (env.STORAGE === 'gcs') {
+  if (env.STORAGE === 'gcs' || (env.STORAGE !== 'local' && env.PHOTO_BUCKET)) {
     if (!env.PHOTO_BUCKET) throw new Error('STORAGE=gcs needs PHOTO_BUCKET');
     return new GcsStorage(env.PHOTO_BUCKET);
   }

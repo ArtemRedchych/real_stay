@@ -102,4 +102,4 @@ Search: tokens in any order, accents stripped, each token a prefix of a word in 
 ## Deployment
 
 - `docker compose up`: Postgres, API (seeds on first boot), app on nginx.
-- Hosted: Cloud Run (API, `STORAGE=gcs`, `API_PREFIX=api`), Cloud SQL database on a shared instance, GCS bucket for photos, static origin behind the existing load balancer at `realstay.dialogislabs.com`, all defined in the Dialogis infrastructure repository; GitHub Actions deploy on push to `main` via Workload Identity Federation (`.github/workflows/ci-deploy.yml`).
+- Hosted: Cloud Run (API; GCS storage is inferred from `PHOTO_BUCKET`; the load balancer forwards `/api/*` unchanged and the API strips that prefix at its edge, so `/health` works for probes and `/api/health` for the public), Cloud SQL database on a shared instance, GCS bucket for photos, static origin behind the existing load balancer at `realstay.dialogislabs.com`, all defined in the Dialogis infrastructure repository; GitHub Actions deploy on push to `main` via Workload Identity Federation (`.github/workflows/ci-deploy.yml`).
