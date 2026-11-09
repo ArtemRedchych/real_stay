@@ -636,3 +636,6 @@ body { overflow-wrap: anywhere; }
 .sub-summary { align-items: flex-start; }
 .submitbar .hint { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mod-head .eyebrow { display: block; max-width: 100%; }
+
+/* upload page: the back link sits above the heading, so the heading loses its top padding */
+.crumb + .upload-head { padding-top: 4px; }

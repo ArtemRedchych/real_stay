@@ -75,6 +75,7 @@ export default function Upload() {
 
   return (
     <div className="wrap wrap-narrow">
+      <a className="crumb" href={d.hotel ? `#hotel-${d.hotel.id}` : '#home'}><Icon id="i-arrow-l" />{d.hotel ? `Back to ${d.hotel.name}` : 'Back'}</a>
       <div className="upload-head"><h1>Share your photos</h1><p>Up to three photos of your room. It takes about a minute, and you sign in only at the end.</p></div>
       <div className="stack">
         {d.welcomeBack && <div className="notice notice-ok"><Icon id="i-check" /><p>Welcome back{session ? `, ${session.account.name.split(' ')[0]}` : ''}. Your draft was kept exactly as you left it.</p></div>}
